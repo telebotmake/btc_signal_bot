@@ -1,6 +1,3 @@
-حتماً:
-
-```
 # Bitcoin Signal Bot 🚀
 
 This is a **Telegram bot** that provides **buy** and **sell** signals for **Bitcoin** based on various technical indicators and candlestick patterns. 📊 The bot uses **CoinGecko API** to fetch real-time Bitcoin price data and **TA-Lib** for technical analysis. 💹
@@ -118,4 +115,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## Support 💬
 
 For any issues or questions, feel free to open an issue on the GitHub repository or contact me directly. 💌
-```
