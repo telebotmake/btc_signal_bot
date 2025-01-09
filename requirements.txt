@@ -1,0 +1,5 @@
+
+requests
+pandas
+talib
+python-telegram-bot
