@@ -15,7 +15,7 @@ API_TOKEN = "your_telegram_api_token"
 
 # Function to fetch historical data
 def fetch_historical_data():
-    params = {'vs_currency': 'usd', 'days': '100'}
+    params = {'vs_currency': 'usd', 'days': '100', 'interval': 'daily'}
     response = requests.get(HISTORICAL_API_URL, params=params)
 
     if response.status_code != 200:
