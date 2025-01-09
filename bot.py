@@ -1,3 +1,4 @@
+# Logging settings
 import requests
 import pandas as pd
 import talib
@@ -5,15 +6,14 @@ from telegram import Update
 from telegram.ext import Application, CommandHandler, CallbackContext
 import logging
 
-# تنظیمات لاگ
 logging.basicConfig(format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO)
 
-# ثابت‌ها
+# Constants
 HISTORICAL_API_URL = "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart"
 LIVE_PRICE_API_URL = "https://api.coingecko.com/api/v3/simple/price"
 API_TOKEN = "your_telegram_api_token"
 
-# تابع برای دریافت داده‌های تاریخی
+# Function to fetch historical data
 def fetch_historical_data():
     params = {'vs_currency': 'usd', 'days': '100'}
     response = requests.get(HISTORICAL_API_URL, params=params)
@@ -29,7 +29,7 @@ def fetch_historical_data():
     df['timestamp'] = pd.to_datetime(df['timestamp'], unit='ms')
     df.set_index('timestamp', inplace=True)
 
-    # محاسبه شاخص‌ها
+    # Calculate indicators
     df['SMA_50'] = talib.SMA(df['price'], timeperiod=50)
     df['RSI'] = talib.RSI(df['price'], timeperiod=14)
     df['MACD'], df['MACD_signal'], df['MACD_hist'] = talib.MACD(
@@ -43,7 +43,7 @@ def fetch_historical_data():
 
     return df
 
-# تابع برای دریافت قیمت لحظه‌ای
+# Function to fetch live price
 def fetch_live_price():
     params = {'ids': 'bitcoin', 'vs_currencies': 'usd'}
     response = requests.get(LIVE_PRICE_API_URL, params=params)
@@ -55,7 +55,7 @@ def fetch_live_price():
     data = response.json()
     return data['bitcoin']['usd']
 
-# تحلیل سیگنال‌ها
+# Signal analysis
 def analyze_signal(df, live_price):
     sma_50 = df['SMA_50'].iloc[-1]
     rsi = df['RSI'].iloc[-1]
@@ -94,7 +94,7 @@ def analyze_signal(df, live_price):
 
     return signal, reason, indicator_status
 
-# دستور /signal
+# /signal command
 async def signal(update: Update, context: CallbackContext):
     try:
         df = fetch_historical_data()
@@ -107,7 +107,7 @@ async def signal(update: Update, context: CallbackContext):
         logging.error(f"Error in /signal command: {e}")
         await update.message.reply_text("Error fetching or analyzing data.")
 
-# دستور /start
+# /start command
 async def start(update: Update, context: CallbackContext):
     welcome_message = (
         "Welcome to the Bitcoin Signal Bot!\n\n"
@@ -118,7 +118,7 @@ async def start(update: Update, context: CallbackContext):
     )
     await update.message.reply_text(welcome_message)
 
-# راه‌اندازی ربات
+# Bot setup
 def main():
     application = Application.builder().token(API_TOKEN).build()
     application.add_handler(CommandHandler('start', start))
